@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('index');
+})->name('home');
+
+Route::get('about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('projects', function () {
+    return view('projects');
+})->name('projects');
+
+Route::resource('users', UserController::class)->only([
+    'index', 'show'
+  ]);
+
+Route::resource('employees', EmployeeController::class);
