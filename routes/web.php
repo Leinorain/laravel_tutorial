@@ -27,8 +27,8 @@ Route::get('projects', function () {
     return view('projects');
 })->name('projects');
 
-Route::resource('users', UserController::class)->only([
-    'index', 'show'
-  ]);
+Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
 
-Route::resource('employees', EmployeeController::class);
+Route::get('users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users/{user:id}', [UserController::class, 'show']) ->name('users.show');

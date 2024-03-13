@@ -1,19 +1,18 @@
 <x-layout>
-    @foreach ($users as $user)
+    @foreach ($usersWithEmployees as $user)
         <h4>{{ $user->name }}</h4>
         <ul>
             <li>email: {{ $user->email }}</li>
         </ul>
-            @if (($user->subordinates)->isNotEmpty())
+            @if (($user->employees)->isNotEmpty())
                 <h6>
-                    Subordinates:
+                    Subordinates
                 </h6>
                 <ul>
-                    @foreach ($user->subordinates as $subordinate)
-                        <li>{{ $subordinate->full_name }} : {{ $subordinate->job_title }}</li>
+                    @foreach ($user->employees as $employee)
+                        <li>{{ $employee->first_name }} {{ $employee->middle_initial }}. {{ $employee->last_name }} : {{ $employee->job_title }}</li>
                     @endforeach
                 </ul>
             @endif
     @endforeach
 </x-layout>
- 
