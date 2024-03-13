@@ -1,22 +1,15 @@
 <?php
- 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class Employee extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
-
     protected $fillable = [
         'supervisor_id',
-        'department_id',
         'first_name',
         'last_name',
         'middle_initial',
@@ -27,27 +20,37 @@ class Employee extends Model
         'profile_picture',
     ];
 
-    public function department(): BelongsTo
+    public function preferences()
+    {
+        return $this->hasOne(EmployeePreference::class);
+    }
+
+    public function department()
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function supervisor(): BelongsTo
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
+    }
+
+    public function supervisor()
     {
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
-    public function age(): int
+    public function age()
     {
-        return Carbon::parse($this->birthdate)->age;
+        return Carbon::parse($this->attributes['birthdate'])->age;
     }
 
-    public function getFullNameAttribute(): string
+    public function getFullNameAttribute()
     {
-        return "$this->first_name $this->middle_initial. $this->last_name";
+        return $this->attributes['first_name'] . ' ' . $this->attributes['middle_initial'] . '. ' . $this->attributes['last_name'];
     }
 
-    public function colleagues(): HasMany
+    public function subordinates()
     {
         return $this->hasMany(Employee::class, 'department_id', 'department_id')->where('id', '<>', $this->id);
     }
