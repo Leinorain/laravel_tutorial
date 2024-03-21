@@ -1,19 +1,20 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $usersWithEmployees = User::with('employees')->get();
-        return view('users.index', compact('usersWithEmployees'));
+        $users = User::select('id', 'name', 'email')->get();
+        return view('users.index', compact('users'));
     }
 
-    public function show(User $user)
+    public function show(User $user): View
     {
         return view('users.show', [
             'user' => $user

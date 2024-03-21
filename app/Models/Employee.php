@@ -4,12 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Carbon\Carbon;
 
 class Employee extends Model
 {
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'supervisor_id',
+        'department_id',
         'first_name',
         'last_name',
         'middle_initial',
@@ -20,37 +28,37 @@ class Employee extends Model
         'profile_picture',
     ];
 
-    public function preferences()
+    public function preference(): HasOne
     {
         return $this->hasOne(EmployeePreference::class);
     }
 
-    public function department()
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function projects()
+    public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class);
     }
 
-    public function supervisor()
+    public function supervisor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
-    public function age()
+    public function age(): int
     {
-        return Carbon::parse($this->attributes['birthdate'])->age;
+        return Carbon::parse($this->birthdate)->age;
     }
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
-        return $this->attributes['first_name'] . ' ' . $this->attributes['middle_initial'] . '. ' . $this->attributes['last_name'];
+        return "$this->first_name $this->middle_initial. $this->last_name";
     }
 
-    public function subordinates()
+    public function colleagues(): HasMany
     {
         return $this->hasMany(Employee::class, 'department_id', 'department_id')->where('id', '<>', $this->id);
     }

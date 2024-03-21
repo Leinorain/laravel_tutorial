@@ -1,21 +1,13 @@
 <x-layout>
     <h1>Selected Employee Page!</h1>
-
-    <!-- TEST -->
     <h2>Hello {{ $employee->full_name }}!</h2>
-    <h5>Company Id Number: {{ $employee->id }}</h5>
-    {{-- {{ age() }} --}}
-    <p>Age: {{ $employee->age() }}</p>
-
-    <!-- resources/views/employees/show.blade.php -->
-
-
-
-
-        @forelse ($employee->department->employees->where('id', '<>', $employee->id) as $colleague)
-            <p>{{ $colleague->first_name }} (Job Title: {{ $colleague->job_title }})</p>
-        @empty
-            <p>No colleagues in the same department</p>
-        @endforelse
-
+    <p>Age: {{ $employee->age() }} (Job Title: {{ $employee->job_title }})</p>
+    <h6>
+        Subordinates (Same Department)
+    </h6>
+    @forelse ($employee->colleagues as $colleague)
+        <p>{{ $colleague->full_name }} (Job Title: {{ $colleague->job_title }})</p>
+    @empty
+        <p>No colleagues in the same department</p>
+    @endforelse
 </x-layout>
